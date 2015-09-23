@@ -9,8 +9,10 @@
  ******************************************************************************/
 
 import java.util.Comparator;
+
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
-//import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdOut;
 
 
 public class Point implements Comparable<Point> {
@@ -123,21 +125,30 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
-    	/*int n = 7;
-    	Point[] ps = new Point[n];
-    	for (int i = 0; i<n; i++) {
-    		ps[i] = new Point(i, n-i);
-    		StdOut.println(ps[i].toString());
+    	// read the N points from a file
+    	In in = new In(args[0]);
+    	int N = in.readInt();
+    	Point[] points = new Point[N];
+    	for (int i = 0; i < N; i++) {
+    		int x = in.readInt();
+    		int y = in.readInt();
+    		points[i] = new Point(x, y);
     	}
-    	BruteCollinearPoints bcp = new BruteCollinearPoints(ps);
-    	StdOut.println(bcp.numberOfSegments());
-    	for (LineSegment l: bcp.segments()) {
-    		StdOut.println(l.toString());
+
+    	// draw the points
+    	StdDraw.show(0);
+    	StdDraw.setXscale(0, 32768);
+    	StdDraw.setYscale(0, 32768);
+    	for (Point p : points) {
+    		p.draw();
     	}
-    	FastCollinearPoints fcp = new FastCollinearPoints(ps);
-    	StdOut.println(fcp.numberOfSegments());
-    	for (LineSegment l: fcp.segments()) {
-    		StdOut.println(l.toString());
-    	}*/
-    }
+    	StdDraw.show();
+    	
+    	// print and draw the line segments
+    	FastCollinearPoints collinear = new FastCollinearPoints(points);
+    	for (LineSegment segment : collinear.segments()) {
+    		StdOut.println(segment);
+    		segment.draw();
+    	}
+   }
 }

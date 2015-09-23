@@ -28,11 +28,11 @@ public class FastCollinearPoints {
 				} else {
 					if (segment.size() > 3) {
 						addSegment(segment);
-						for (int k = first; k < j; k++) {
+						/*for (int k = first; k < j; k++) {
 							Point tmp = this.points[++i];
 							this.points[i] = this.points[k];
 							this.points[k] = tmp;
-						}
+						}*/
 					}
 					segment = new ResizingArrayBag<Point>();
 					segment.add(pi);
@@ -42,11 +42,11 @@ public class FastCollinearPoints {
 			}
 			if (segment.size() > 3) {
 				addSegment(segment);
-				for (int k = first; k < len-1; k++) {
+				/*for (int k = first; k < len-1; k++) {
 					Point tmp = this.points[++i];
 					this.points[i] = this.points[k];
 					this.points[k] = tmp;
-				}
+				}*/
 				segment = new ResizingArrayBag<Point>();
 			}
 		}
