@@ -8,6 +8,7 @@
  *
  ******************************************************************************/
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 import edu.princeton.cs.algs4.In;
@@ -99,11 +100,20 @@ public class Point implements Comparable<Point> {
     	= new Comparator<Point>() {
         /* YOUR CODE HERE */
     	public int compare(Point p1, Point p2) {
+    		// slope p1<slope p2 => 1
+    		double s1 = Point.this.slopeTo(p1);
+    		double s2 = Point.this.slopeTo(p2);
+    		if (s1 < s2) return 1;
+    		if (s2 > s1) return -1;
+    		return 0;
+    		/*if (p1 == Point.this && p2 == Point.this) return 0;
+    		if (p1 == Point.this) return 1;
+    		if (p2 == Point.this) return -1;
     		long s1 = (p1.y - Point.this.y) * (p2.x - Point.this.x);
     		long s2 = (p2.y - Point.this.y) * (p1.x - Point.this.x);
     		if (s1 == s2) return 0;
-    		if (s1 > s2) return 1;
-    		return -1;
+    		if (s1 < s2) return 1;
+    		return -1;*/
     	}
     };
 
@@ -125,6 +135,11 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
+    	/*Point[] ps = {new Point(0,0), new Point(1,0), new Point(2,0)};
+    	Arrays.sort(ps,ps[1].slopeOrder);
+    	for (Point p: ps) {
+    		StdOut.printf("%s %d\n",p,ps[1].slopeOrder.compare(ps[0], p));
+    	}*/
     	// read the N points from a file
     	In in = new In(args[0]);
     	int N = in.readInt();
@@ -146,9 +161,11 @@ public class Point implements Comparable<Point> {
     	
     	// print and draw the line segments
     	FastCollinearPoints collinear = new FastCollinearPoints(points);
+    	StdOut.println("Find points");
     	for (LineSegment segment : collinear.segments()) {
     		StdOut.println(segment);
     		segment.draw();
     	}
+    	StdOut.printf("Found %d segments\n",collinear.numberOfSegments());
    }
 }
