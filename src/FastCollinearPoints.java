@@ -6,53 +6,62 @@ public class FastCollinearPoints {
 	private Point[] points;
 	private int minlength;
 	private ResizingArrayBag<Point[]> segments;
+	private LineSegment[] result;
+	
 	public FastCollinearPoints(Point[] points) {
 		// finds all line segments containing 4 or more points
 		minlength = 4;
 		if (points == null) throw new NullPointerException();
-		loadPoints(points);
+		this.points = Arrays.copyOf(points, points.length);
+		checkinput();
 		findSegments();
 	}
-	private void loadPoints(Point[] points) {
-		int len = points.length;
-		this.points = new Point[len];
-		for (int i = 0; i < len; i++) {
-			if (points[i] == null) throw new NullPointerException();
-			this.points[i] = points[i];
+	private void checkinput() {
+		if (points.length == 0) return;
+		Arrays.sort(this.points);
+		for (int i = 0; i < this.points.length; i++) {
+			if (this.points[i] == null) throw new NullPointerException();
+			if (i > 0 && this.points[i].compareTo(this.points[i-1]) == 0) throw new IllegalArgumentException("Duplicate point found");
 		}
 	}
 	private void findSegments() {
+		if (points.length < minlength) return;
 		segments = new  ResizingArrayBag<Point[]>();
 		ResizingArrayBag<Point> segment;
-		Point[] sortedp = new Point[points.length];
-		Point p;
-		for (int i = 0; i < points.length; i++) {
+		Point[] sp = new Point[points.length];
+		sp = Arrays.copyOf(points, points.length);
+		int next_index=1;
+		Point next;
+		for (int i = 0; i < points.length-minlength+1; i++) {
 			Point pi = points[i];
-			for (int j = 0; j< points.length; j++) {
-				sortedp[j] = points[j];
+			if (i > 0) {
+				sp[next_index] = sp[0];
+				sp[0] = pi;
 			}
-			sortedp[i] = sortedp[0];
-			sortedp[0] = pi;
 			segment = new ResizingArrayBag<Point>();
 			segment.add(pi);
-			Arrays.sort(sortedp, 1, points.length, pi.slopeOrder);
-			p = sortedp[1];
-			segment.add(p);
-			for (int j = 2; j < sortedp.length; j++) {
-				Point pj = sortedp[j];
-				if (pj != pi) {
-					if (pi.slopeOrder.compare(p, pj) != 0) {
-						// New slope, save old segment and start a new one.
-						addSegment(segment);
-						segment = new ResizingArrayBag<Point>();
-						segment.add(pi);
-						p = pj;
-					}
-					segment.add(pj);
+			Arrays.sort(sp, 1, points.length, pi.slopeOrder());
+			segment.add(sp[1]);
+			next = points[i+1];
+			next_index = 1;
+			for (int j = 2; j < sp.length; j++) {
+				if (next == sp[j]) next_index = j;
+				if (pi.slopeOrder().compare(sp[j-1], sp[j]) != 0) {
+					// New slope, save old segment and start a new one.
+					addSegment(segment);
+					segment = new ResizingArrayBag<Point>();
+					segment.add(pi);
 				}
+				segment.add(sp[j]);
 			}
 			addSegment(segment);
 		}
+		result = new LineSegment[numberOfSegments()];
+		int i = 0;
+		for (Point[] ls: segments) {
+			result[i++] = new LineSegment(ls[0], ls[1]);
+		}
+		segments = null;
 	}
 	private void addSegment(ResizingArrayBag<Point> segment) {
 		if (segment.size() < minlength) return;
@@ -70,17 +79,11 @@ public class FastCollinearPoints {
 	}
 	public int numberOfSegments() {
 		// the number of line segments
-		return segments.size();
+		return result.length;
 	}
 	public LineSegment[] segments() {
 		// the line segments
-		
-		LineSegment[] result = new LineSegment[numberOfSegments()];
-		int i = 0;
-		for (Point[] ls: segments) {
-			result[i++] = new LineSegment(ls[0],ls[1]);
-		}
-		return result;
+		return Arrays.copyOf(result, result.length);
 
 	}
 }

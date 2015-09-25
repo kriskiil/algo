@@ -13,7 +13,6 @@ import java.util.Comparator;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
-import edu.princeton.cs.algs4.Stopwatch;
 
 
 public class Point implements Comparable<Point> {
@@ -69,7 +68,7 @@ public class Point implements Comparable<Point> {
     	if (dx == 0 && dy == 0) return Double.NEGATIVE_INFINITY;
     	if (dx == 0) return Double.POSITIVE_INFINITY;
     	if (dy == 0) return 0.0;
-    	return (1.0*dy)/dx;
+    	return (1.0 * dy) / dx;
     }
 
     /**
@@ -86,8 +85,8 @@ public class Point implements Comparable<Point> {
      */
     public int compareTo(Point that) {
         /* YOUR CODE HERE */
-    	if (this.y == that.y) return this.x-that.x;
-    	return this.y-that.y;
+    	if (this.y == that.y) return this.x - that.x;
+    	return this.y - that.y;
     }
 
     /**
@@ -96,27 +95,17 @@ public class Point implements Comparable<Point> {
      *
      * @return the Comparator that defines this ordering on points
      */
-    public Comparator<Point> slopeOrder 
-    	= new Comparator<Point>() {
-        /* YOUR CODE HERE */
-    	public int compare(Point p1, Point p2) {
-    		// slope p1<slope p2 => 1
-    		double s1 = Point.this.slopeTo(p1);
-    		double s2 = Point.this.slopeTo(p2);
-    		if (s2 - s1 > 2*Double.MIN_NORMAL) return 1;
-    		if (s1 - s2 > 2*Double.MIN_NORMAL) return -1;
-    		return 0;
-    		/*if (p1 == Point.this && p2 == Point.this) return 0;
-    		if (p1 == Point.this) return 1;
-    		if (p2 == Point.this) return -1;*/
-    		/*long s1 = (p1.y - Point.this.y) * (p2.x - Point.this.x);
-    		long s2 = (p2.y - Point.this.y) * (p1.x - Point.this.x);
-    		if (s1 == s2) return 0;
-    		if (s1 < s2) return 1;
-    		return -1;*/
-    	}
-    };
-
+    public Comparator<Point> slopeOrder() {
+    	return new Comparator<Point>() {
+        	/* YOUR CODE HERE */
+        	public int compare(Point p1, Point p2) {
+        		// slope p1<slope p2 => 1
+        		double s1 = slopeTo(p1);
+        		double s2 = slopeTo(p2);
+        		return Double.compare(s1, s2);
+        	}
+    	};
+    }
 
     /**
      * Returns a string representation of this point.
@@ -135,39 +124,33 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
-    	/*Point[] ps = {new Point(0,0), new Point(1,0), new Point(2,0)};
-    	Arrays.sort(ps,ps[1].slopeOrder);
-    	for (Point p: ps) {
-    		StdOut.printf("%s %d\n",p,ps[1].slopeOrder.compare(ps[0], p));
-    	}*/
-    	// read the N points from a file
-    	In in = new In(args[0]);
-    	int N = in.readInt();
-    	Point[] points = new Point[N];
-    	for (int i = 0; i < N; i++) {
-    		int x = in.readInt();
-    		int y = in.readInt();
-    		points[i] = new Point(x, y);
-    	}
+        // read the N points from a file
+    	Point[] pts = {new Point(1, 1), new Point(1, 1), new Point(0, 1)};
+    	BruteCollinearPoints ttt = new BruteCollinearPoints(pts);
+/*        In in = new In(args[0]);
+        int N = in.readInt();
+        Point[] points = new Point[N];
+        for (int i = 0; i < N; i++) {
+            int x = in.readInt();
+            int y = in.readInt();
+            points[i] = new Point(x, y);
+        }
 
-    	// draw the points
-    	StdDraw.show(0);
-    	StdDraw.setXscale(0, 32768);
-    	StdDraw.setYscale(0, 32768);
-    	for (Point p : points) {
-    		p.draw();
-    	}
-    	StdDraw.show();
-    	
-    	// print and draw the line segments
-    	StdOut.println("Find points");
-    	Stopwatch sw = new Stopwatch();
-    	FastCollinearPoints collinear = new FastCollinearPoints(points);
-    	double dt = sw.elapsedTime();
-    	for (LineSegment segment : collinear.segments()) {
-    		StdOut.println(segment);
-    		segment.draw();
-    	}
-    	StdOut.printf("Found %d segments in %g seconds\n",collinear.numberOfSegments(),dt);
+        // draw the points
+        StdDraw.show(0);
+        StdDraw.setXscale(0, 32768);
+        StdDraw.setYscale(0, 32768);
+        for (Point p : points) {
+            p.draw();
+        }
+        StdDraw.show();
+
+        // print and draw the line segments
+        FastCollinearPoints collinear = new FastCollinearPoints(points);
+        for (LineSegment segment : collinear.segments()) {
+            StdOut.println(segment);
+            segment.draw();
+        }
+*/
    }
 }
