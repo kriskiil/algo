@@ -1,7 +1,6 @@
 import java.util.Arrays;
 
 import edu.princeton.cs.algs4.ResizingArrayBag;
-import edu.princeton.cs.algs4.StdOut;
 
 public class FastCollinearPoints {
 	private Point[] points;
@@ -25,29 +24,31 @@ public class FastCollinearPoints {
 	private void findSegments() {
 		segments = new  ResizingArrayBag<Point[]>();
 		ResizingArrayBag<Point> segment;
-		Point[] sortedp = Arrays.copyOf(points, points.length);
+		Point[] sortedp = new Point[points.length];
 		Point p;
 		for (int i = 0; i < points.length; i++) {
 			Point pi = points[i];
-			StdOut.println(pi);
+			for (int j = 0; j< points.length; j++) {
+				sortedp[j] = points[j];
+			}
+			sortedp[i] = sortedp[0];
+			sortedp[0] = pi;
 			segment = new ResizingArrayBag<Point>();
 			segment.add(pi);
-			Arrays.sort(sortedp, pi.slopeOrder);
-			for (Point p2: sortedp){
-				StdOut.printf(" %s",p2);
-			}
-			StdOut.println();
-			p = sortedp[0];
-			for (int j = 0; j < sortedp.length; j++) {
-				if (pi.slopeOrder.compare(p, sortedp[j]) != 0) {
-					// New slope, save old segment and start a new one.
-					addSegment(segment);
-					segment = new ResizingArrayBag<Point>();
-					segment.add(pi);
-					p = sortedp[j];
-				}
-				if (sortedp[j] != pi) {
-					segment.add(sortedp[j]);
+			Arrays.sort(sortedp, 1, points.length, pi.slopeOrder);
+			p = sortedp[1];
+			segment.add(p);
+			for (int j = 2; j < sortedp.length; j++) {
+				Point pj = sortedp[j];
+				if (pj != pi) {
+					if (pi.slopeOrder.compare(p, pj) != 0) {
+						// New slope, save old segment and start a new one.
+						addSegment(segment);
+						segment = new ResizingArrayBag<Point>();
+						segment.add(pi);
+						p = pj;
+					}
+					segment.add(pj);
 				}
 			}
 			addSegment(segment);
@@ -65,7 +66,6 @@ public class FastCollinearPoints {
 		for (Point[] s: segments) {
 			if (s[0] == result[0] && s[1] == result[1]) return;
 		}
-		StdOut.printf("Adding %s -> %s\n",result[0],result[1]);
 		segments.add(result);
 	}
 	public int numberOfSegments() {
