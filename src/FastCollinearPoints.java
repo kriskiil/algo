@@ -6,7 +6,7 @@ public class FastCollinearPoints {
 	private Point[] points;
 	private int minlength;
 	private ResizingArrayBag<Point[]> segments;
-	private LineSegment[] result;
+	private LineSegment[] result = new LineSegment[0];
 	
 	public FastCollinearPoints(Point[] points) {
 		// finds all line segments containing 4 or more points

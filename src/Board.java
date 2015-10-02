@@ -66,11 +66,21 @@ public class Board {
     			if (n==2) return exch(ns[0],ns[1]);
     		}
     	}
-    	return exch(1,2);
+    	for (int i = 0; i < N; i++) {
+    		for (int j = 0; j < N; j++) {
+    			if (squares[i*N+j] != 0) {
+    				ns[n++] = ijton(i,j);
+    			}
+    			if (n==2) return exch(ns[0],ns[1]);
+    		}
+    	}
+    	return null;
     }
     public boolean equals(Object y) {
     	// does this board equal y?
+    	if (this == y) return true;
     	if (y == null) return false;
+    	if (y.getClass() != this.getClass()) return false;
     	Board that = (Board) y;
     	if (this.N != that.N) return false;
     	for (int i = 0; i < N; i++) {
@@ -78,13 +88,13 @@ public class Board {
     			if (this.squares[i*N+j] != that.squares[i*N+j]) return false;
     		}
     	}
-    	return true;    	
+    	return true;
     }
     public Iterable<Board> neighbors() {
     	// all neighboring boards
     	Bag<Board> neighbors = new Bag<Board>();
     	int n = nof0();
-    	if (n-1 > N) neighbors.add(exch(n,n-N));
+    	if (n > N) neighbors.add(exch(n,n-N));
     	if ((n-1)%N > 0) neighbors.add(exch(n,n-1));
     	if ((n-1)%N < N-1) neighbors.add(exch(n,n+1));
     	if ((n-1) < N*(N-1)) neighbors.add(exch(n,n+N));
@@ -145,7 +155,7 @@ public class Board {
 		}
 		sq[2][2] = 0;
 		Board def = new Board(sq);
-		StdOut.println(def);
+		StdOut.println(def.twin());
 		StdOut.println(def.equals(def.exch(1,5)));
 		StdOut.println(def.equals(def.exch(1,5).twin()));
 		StdOut.println(def.equals(def));

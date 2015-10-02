@@ -12,8 +12,8 @@ public class BruteCollinearPoints {
 		this.points = Arrays.copyOf(points, points.length);
 		Arrays.sort(this.points);
 		for (int i = 0; i < len; i++) {
-			if (points[i] == null) throw new NullPointerException();
-			if (i > 0 && points[i].compareTo(points[i-1]) == 0) throw new IllegalArgumentException("Duplicate point found");
+			if (this.points[i] == null) throw new NullPointerException();
+			if (i > 0 && this.points[i].compareTo(this.points[i-1]) == 0) throw new IllegalArgumentException("Duplicate point found");
 		}
 		l4segments = new ResizingArrayBag<LineSegment>();
 		Point[] segment = new Point[4];		
