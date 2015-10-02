@@ -28,9 +28,8 @@ public class FastCollinearPoints {
 		if (points.length < minlength) return;
 		segments = new  ResizingArrayBag<Point[]>();
 		ResizingArrayBag<Point> segment;
-		Point[] sp = new Point[points.length];
-		sp = Arrays.copyOf(points, points.length);
-		int next_index=1;
+		Point[] sp = Arrays.copyOf(points, points.length);
+		int next_index = 1;
 		Point next;
 		for (int i = 0; i < points.length-minlength+1; i++) {
 			Point pi = points[i];
@@ -56,7 +55,7 @@ public class FastCollinearPoints {
 			}
 			addSegment(segment);
 		}
-		result = new LineSegment[numberOfSegments()];
+		result = new LineSegment[segments.size()];
 		int i = 0;
 		for (Point[] ls: segments) {
 			result[i++] = new LineSegment(ls[0], ls[1]);

@@ -30,7 +30,7 @@ public class BruteCollinearPoints {
 								segment[2] = this.points[k];
 								segment[3] = this.points[l];
 								Arrays.sort(segment);
-								this.l4segments.add(new LineSegment(segment[0],segment[3]));
+								this.l4segments.add(new LineSegment(segment[0], segment[3]));
 							}
 						}
 					}

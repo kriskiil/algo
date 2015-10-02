@@ -13,6 +13,7 @@ import java.util.Comparator;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.Stopwatch;
 
 
 public class Point implements Comparable<Point> {
@@ -125,9 +126,7 @@ public class Point implements Comparable<Point> {
     public static void main(String[] args) {
         /* YOUR CODE HERE */
         // read the N points from a file
-    	Point[] pts = {new Point(1, 1), new Point(1, 1), new Point(0, 1)};
-    	BruteCollinearPoints ttt = new BruteCollinearPoints(pts);
-/*        In in = new In(args[0]);
+        In in = new In(args[0]);
         int N = in.readInt();
         Point[] points = new Point[N];
         for (int i = 0; i < N; i++) {
@@ -146,11 +145,14 @@ public class Point implements Comparable<Point> {
         StdDraw.show();
 
         // print and draw the line segments
+        Stopwatch sw = new Stopwatch();
         FastCollinearPoints collinear = new FastCollinearPoints(points);
+        double elapsed = sw.elapsedTime();
         for (LineSegment segment : collinear.segments()) {
             StdOut.println(segment);
             segment.draw();
         }
-*/
+        StdOut.println(elapsed);
+
    }
 }
