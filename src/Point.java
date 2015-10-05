@@ -152,7 +152,6 @@ public class Point implements Comparable<Point> {
             StdOut.println(segment);
             segment.draw();
         }
-        StdOut.println(elapsed);
-
+        StdOut.println("Found " + collinear.numberOfSegments() + " segments in " + elapsed + "s");
    }
 }
