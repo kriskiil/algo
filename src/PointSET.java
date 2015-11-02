@@ -6,16 +6,8 @@ import edu.princeton.cs.algs4.StdDraw;
 
 
 public class PointSET {
-	SET<Point2D> set;
-	private class Node {
-		Node right;
-		Node left;
-		Point2D p;
-		RectHV rect;
-		public Node(Point2D key) {
-			this.p = key;
-		}
-	}
+	private SET<Point2D> set;
+
 	public PointSET() {
 		// construct an empty set of points
 		set = new SET<Point2D>();
@@ -76,7 +68,7 @@ public class PointSET {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }
