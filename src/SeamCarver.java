@@ -23,6 +23,10 @@ public class SeamCarver {
 	}
 	public double energy(int x, int y) {
 		// energy of pixel at column x and row y
+		return Math.sqrt(energy2(x, y));
+	}
+	private double energy2(int x, int y) {
+		// energy of pixel at column x and row y
 		Color up = picture.get(x, y-1);
 		Color down = picture.get(x, y+1);
 		Color left = picture.get(x-1, y);
@@ -41,10 +45,27 @@ public class SeamCarver {
 	public int[] findHorizontalSeam() {
 		// sequence of indices for horizontal seam
 		int [] seam = new int[picture.width()];
+		int [] edgeTo = new int[picture.width()*picture.height()];
+		double [] distTo = new double[picture.width()*picture.height()];
+		double [] energy = new double[picture.height()];
+		for (int x = 0; x < picture.width()-1; x++) {
+			for (int y = 0; y < picture.height(); y++)
+				energy[y] = energy(x,y);
+			for (int y = 0; y < picture.height(); y++) {
+				for (int k = -1; k < 2; k++) {
+					if (y + k >= 0 && y + k < picture.height()) {
+						double d = distTo[(x-1)+y*picture.width()];
+						distTo[x+y*picture.width()] = d;
+					}
+				}
+			}
+		}
+		return seam;
 	}
 	public int[] findVerticalSeam() {
 		// sequence of indices for vertical seam
 		int [] seam = new int[picture.height()];
+		return seam;
 	}
 	public void removeHorizontalSeam(int[] seam) {
 		// remove horizontal seam from current picture
