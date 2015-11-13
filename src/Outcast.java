@@ -3,7 +3,7 @@ import edu.princeton.cs.algs4.StdOut;
 
 
 public class Outcast {
-	WordNet wn;
+	private WordNet wn;
 	public Outcast(WordNet wordnet) {
 		// constructor takes a WordNet object
 		this.wn = wordnet;
@@ -20,7 +20,7 @@ public class Outcast {
 					d += wn.distance(nouns[i], nouns[j]);
 				}
 			}
-			if (d>maxdist) {
+			if (d > maxdist) {
 				maxdist = d;
 				target = nouns[i];
 			}

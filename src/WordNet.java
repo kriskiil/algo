@@ -9,16 +9,53 @@ import java.util.Arrays;
 
 public class WordNet {
 	// constructor takes the name of the two input files
-	private LinearProbingHashST<String,Bag<Integer>> nouns = new LinearProbingHashST<String,Bag<Integer>>();
+	
+	private class CycleDetector {
+//		private boolean[] visited;
+//		private Stack<Integer> dirty = new Stack<Integer>();
+		private boolean[] marked;
+		private boolean[] cycle;
+		int root = -1;
+		public CycleDetector(Digraph G) {
+			marked = new boolean[G.V()];
+			cycle = new boolean[G.V()];
+			for (int v = 0; v < G.V(); v++) {
+				if (!marked[v]) {
+					dfs(G, v);
+				}
+			}
+		}
+		public void dfs(Digraph G, int v) {
+			marked[v] = true;
+			cycle[v] = true;
+			if (G.outdegree(v) == 0) {
+				if (root < 0) {
+					root = v;
+				} else {
+					throw new IllegalArgumentException("Rooted DAG contains more than 1 root");
+				}
+			}
+			for (int w: G.adj(v)) {
+				if (!marked[w]) {
+					dfs(G, w);
+				} else if (cycle[w]) {
+					throw new IllegalArgumentException("Rooted DAG contains a Cycle");
+				}
+			}
+			cycle[v] = false;
+		}
+	}
+	
+	private LinearProbingHashST<String, Bag<Integer>> nouns = new LinearProbingHashST<String, Bag<Integer>>();
 	private Digraph wn;
 	private String[] synsets = new String[2];
 	//private String[] gloss = new String[2];
 	private SAP s;
-	public WordNet(String synsets, String hypernyms){
-		if (synsets == null || synsets == null) throw new NullPointerException();
+	public WordNet(String synsets, String hypernyms) {
+		if (synsets == null || hypernyms == null) throw new NullPointerException();
 		In synsetsIn = new In(synsets);
 		int V = 0;
-		for(String line = synsetsIn.readLine(); line != null; line = synsetsIn.readLine()){
+		for (String line = synsetsIn.readLine(); line != null; line = synsetsIn.readLine()) {
 			String[] fields = line.split(",", 3);
 			int idx = Integer.parseInt(fields[0]);
 			while (idx > this.synsets.length-1) {
@@ -28,10 +65,10 @@ public class WordNet {
 			this.synsets[idx] = fields[1];
 			//this.gloss[idx] = fields[2];
 			String[] syns = fields[1].split(" ");
-			for(int i = 0; i < syns.length; i++){
-				if(nouns.contains(syns[i])){
+			for (int i = 0; i < syns.length; i++) {
+				if (nouns.contains(syns[i])) {
 					nouns.get(syns[i]).add(idx);
-				}else{
+				} else {
 					Bag<Integer> tmp = new Bag<Integer>();
 					tmp.add(idx);
 					nouns.put(syns[i], tmp);
@@ -41,7 +78,7 @@ public class WordNet {
 		}
 		wn = new Digraph(V);
 		In hypernymsIn = new In(hypernyms);
-		for(String line = hypernymsIn.readLine(); line != null; line = hypernymsIn.readLine()){
+		for (String line = hypernymsIn.readLine(); line != null; line = hypernymsIn.readLine()) {
 			String[] fields = line.split(",");
 			int v = Integer.parseInt(fields[0]);
 			for (int i = 1; i < fields.length; i++) {
@@ -49,42 +86,35 @@ public class WordNet {
 				wn.addEdge(v, w);
 			}
 		}
+		new CycleDetector(wn);
 		s = new SAP(wn);
 	}
 	
 	// returns all WordNet nouns
-	public Iterable<String> nouns(){
+	public Iterable<String> nouns() {
 		return nouns.keys();
 	}
 	
 	// is the word a WordNet noun?
-	public boolean isNoun(String word){
+	public boolean isNoun(String word) {
 		if (word == null) throw new NullPointerException();
 		return nouns.contains(word);
 	}
 	
 	// distance between nounA and nounB (defined below)
-	public int distance(String nounA, String nounB){
-		if (nounA == null || nounB == null) throw new NullPointerException();
+	public int distance(String nounA, String nounB) {
+		if (!isNoun(nounA) || !isNoun(nounB)) throw new IllegalArgumentException();
 		return s.length(nouns.get(nounA), nouns.get(nounB));
 	}
 	
 	// a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
 	// in a shortest ancestral path (defined below)
-	public String sap(String nounA, String nounB){
-		if (nounA == null || nounB == null) throw new NullPointerException();
+	public String sap(String nounA, String nounB) {
+		if (!isNoun(nounA) || !isNoun(nounB)) throw new IllegalArgumentException();
 		int ancestor = s.ancestor(nouns.get(nounA), nouns.get(nounB));		
 		return synsets[ancestor];
 	}
 	
-/*	private Bag<String> define(String noun){
-		Bag<String> result = new Bag<String>();
-		for(int i: nouns.get(noun)){
-			result.add(gloss[i]);
-		}
-		return result;
-	}*/
-
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String synset = args[0];
@@ -94,7 +124,7 @@ public class WordNet {
 		/*for(String gloss: wn.define("b")){
 			StdOut.println(gloss);
 		}*/
-		for(String noun: wn.nouns()){
+		for (String noun: wn.nouns()) {
 			StdOut.println(noun);
 		}
 		StdOut.println(wn.distance("d", "d"));
